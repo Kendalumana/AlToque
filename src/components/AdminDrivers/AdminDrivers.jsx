@@ -25,6 +25,7 @@ const STATUS_BG = {
 export default function AdminDrivers() {
   const [selected, setSelected] = useState(null)
   const [positions, setPositions] = useState(MOCK_DRIVERS.map(d => ({ id: d.id, x: d.x, y: d.y })))
+  const [showProxOverlay, setShowProxOverlay] = useState(true)
   
   // Modal de Agregar Chofer
   const [showAddModal, setShowAddModal] = useState(false)
@@ -141,6 +142,13 @@ export default function AdminDrivers() {
 
             <div className="map-zone-label">📍 Miramar, Puntarenas</div>
 
+            {/* Central hub (casita) */}
+            <div className="driver-pin casita" style={{ left: '50%', top: '50%' }}>
+              <div className="pin-pulse" style={{ borderColor: 'var(--yellow-bright)' }}></div>
+              <div className="pin-avatar" style={{ borderColor: 'var(--yellow-bright)', background: '#111' }}>🏠</div>
+              <div className="pin-label">Central</div>
+            </div>
+
             {MOCK_DRIVERS.map(driver => {
               const pos = positions.find(p => p.id === driver.id) || driver
               return (
@@ -183,7 +191,7 @@ export default function AdminDrivers() {
             )}
 
             {/* Overlay Próximamente */}
-            {!selectedDriver && (
+            {!selectedDriver && showProxOverlay && (
               <div className="drivers-prox-overlay">
                 <div className="drivers-prox-card">
                   <div className="drivers-prox-icon">📡</div>
@@ -193,6 +201,9 @@ export default function AdminDrivers() {
                     Próximamente podrás ver a todos los choferes en tiempo real sobre el mapa de Miramar,
                     asignarles viajes automáticamente según cercanía, y ver el estatus de las entregas.
                   </p>
+                  <button className="drivers-prox-btn" onClick={() => setShowProxOverlay(false)}>
+                    🗺️ Ver en tiempo real
+                  </button>
                 </div>
               </div>
             )}

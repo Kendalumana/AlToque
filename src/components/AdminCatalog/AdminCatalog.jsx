@@ -52,6 +52,50 @@ function EditLocalModal({ local, onClose }) {
 }
 
 /* ─────────────────────────────────────────────────────────
+   Modal Editar Producto (solo vista, próximamente real)
+───────────────────────────────────────────────────────── */
+function EditProductModal({ product, onClose }) {
+  return (
+    <div className="ac-modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="ac-modal-box ac-form-box fade-up">
+        <button className="ac-modal-x" onClick={onClose}>✕</button>
+        <div className="ac-modal-icon">✏️</div>
+        <h3>Editar Producto</h3>
+        <p className="ac-form-subtitle">Vista previa de edición para <strong>{product.name}</strong></p>
+
+        <div style={{ display: 'flex', gap: 10 }}>
+          <div className="ac-form-group" style={{ width: 70, flexShrink: 0 }}>
+            <label>Emoji</label>
+            <input className="ac-form-input small-c" defaultValue={product.emoji} />
+          </div>
+          <div className="ac-form-group" style={{ flex: 1 }}>
+            <label>Nombre del producto</label>
+            <input className="ac-form-input" defaultValue={product.name} />
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <div className="ac-form-group" style={{ flex: 1 }}>
+            <label>Precio (₡)</label>
+            <input className="ac-form-input" defaultValue={product.price} type="number" />
+          </div>
+          <div className="ac-form-group" style={{ flex: 1 }}>
+            <label>Tienda / Marca</label>
+            <input className="ac-form-input" defaultValue={product.shop} />
+          </div>
+        </div>
+
+        <div className="ac-prox-banner">
+          <span className="ac-prox-badge">🚀 Próximamente</span>
+          <p>La edición real de productos se habilitará junto con la integración a base de datos. Por ahora es modo demostración.</p>
+        </div>
+
+        <button className="ac-modal-confirm full-btn" onClick={onClose}>Entendido</button>
+      </div>
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────
    Modal Agregar Nuevo Local — formulario animado en pasos
 ───────────────────────────────────────────────────────── */
 function AddLocalModal({ onClose }) {
@@ -169,6 +213,7 @@ export default function AdminCatalog({ products, setProducts, restaurants, setRe
   const [activeTab, setActiveTab] = useState('restaurants')
   const [filterCat, setFilterCat] = useState('all')
   const [editLocal, setEditLocal] = useState(null)
+  const [editProduct, setEditProduct] = useState(null)
   const [showAddLocal, setShowAddLocal] = useState(false)
 
   // Reset localStorage y recargar datos originales al montar
@@ -187,6 +232,7 @@ export default function AdminCatalog({ products, setProducts, restaurants, setRe
   return (
     <div className="admin-catalog">
       {editLocal   && <EditLocalModal local={editLocal} onClose={() => setEditLocal(null)} />}
+      {editProduct && <EditProductModal product={editProduct} onClose={() => setEditProduct(null)} />}
       {showAddLocal && <AddLocalModal onClose={() => setShowAddLocal(false)} />}
 
       {/* Tabs */}
@@ -280,6 +326,7 @@ export default function AdminCatalog({ products, setProducts, restaurants, setRe
                   <th>Categoría</th>
                   <th>Tienda</th>
                   <th>Precio</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -294,10 +341,19 @@ export default function AdminCatalog({ products, setProducts, restaurants, setRe
                     <td><span className="ac-cat-chip">{CAT_LABEL[p.cat] || p.cat}</span></td>
                     <td className="ac-muted">{p.shop}</td>
                     <td><span className="ac-price">₡{p.price.toLocaleString()}</span></td>
+                    <td>
+                      <button
+                        className="ac-edit-btn"
+                        onClick={() => setEditProduct(p)}
+                        title="Editar producto"
+                      >
+                        ✏️ Editar
+                      </button>
+                    </td>
                   </tr>
                 ))}
                 {filteredProducts.length === 0 && (
-                  <tr><td colSpan={4} className="ac-empty-row">Sin productos en esta categoría</td></tr>
+                  <tr><td colSpan={5} className="ac-empty-row">Sin productos en esta categoría</td></tr>
                 )}
               </tbody>
             </table>
