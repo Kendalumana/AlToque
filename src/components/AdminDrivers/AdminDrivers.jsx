@@ -167,6 +167,10 @@ export default function AdminDrivers() {
                   setSelected(null)
                   setShowProxOverlay(true)
                 }}
+                onShowDetails={(id) => {
+                  setSelected(id)
+                  setDetailModalOpen(true)
+                }}
               />
             ) : (
               /* ── Simulación visual de mapa (default) ── */

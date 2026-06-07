@@ -10,7 +10,7 @@ const STATUS_COLOR = {
   'Descanso':   '#f27444',
 }
 
-export default function MiniMapPreview({ selectedDriverId, onClose }) {
+export default function MiniMapPreview({ selectedDriverId, onClose, onShowDetails }) {
   const mapRef        = useRef(null)
   const mapInstanceRef = useRef(null)
 
@@ -33,7 +33,6 @@ export default function MiniMapPreview({ selectedDriverId, onClose }) {
       }
 
       // Adicionalmente, Leaflet guarda en la propiedad interna del elemento del DOM si ya tiene un mapa.
-      // Podemos limpiar esa propiedad para asegurar que no tire el error de "reused by another instance".
       if (mapRef.current && mapRef.current._leaflet_id) {
         mapRef.current._leaflet_id = null
       }
@@ -104,7 +103,8 @@ export default function MiniMapPreview({ selectedDriverId, onClose }) {
           <div class="map-popup">
             <strong>${sd.name}</strong><br/>
             <span style="color:${color}">● ${sd.status}</span><br/>
-            <span style="color:#aaa; font-size:0.8em">📦 ${sd.tripsToday} viajes hoy</span>
+            <span style="color:#aaa; font-size:0.85em; display:block; margin-bottom: 6px;">📦 ${sd.tripsToday} viajes hoy</span>
+            <button id="popup-more-details-btn" class="popup-detail-btn">Ver más detalles</button>
           </div>
         `, { className: 'dark-popup' })
         
@@ -132,11 +132,33 @@ export default function MiniMapPreview({ selectedDriverId, onClose }) {
             <div class="map-popup">
               <strong>${driver.name}</strong><br/>
               <span style="color:${color}">● ${driver.status}</span><br/>
-              <span style="color:#aaa; font-size:0.8em">📦 ${driver.tripsToday} viajes hoy</span>
+              <span style="color:#aaa; font-size:0.85em; display:block; margin-bottom: 6px;">📦 ${driver.tripsToday} viajes hoy</span>
+              <button data-driver-id="${driver.id}" class="popup-detail-btn list-popup-btn">Ver más detalles</button>
             </div>
           `, { className: 'dark-popup' })
         })
       }
+
+      // Event listener cuando se abre un popup para interceptar el clic del botón
+      map.on('popupopen', (e) => {
+        const popupNode = e.popup.getElement()
+        if (!popupNode) return
+
+        const singleBtn = popupNode.querySelector('#popup-more-details-btn')
+        if (singleBtn) {
+          singleBtn.onclick = () => {
+            if (onShowDetails && sd) onShowDetails(sd.id)
+          }
+        }
+
+        const listBtns = popupNode.querySelectorAll('.list-popup-btn')
+        listBtns.forEach(btn => {
+          btn.onclick = () => {
+            const id = parseInt(btn.getAttribute('data-driver-id'), 10)
+            if (onShowDetails) onShowDetails(id)
+          }
+        })
+      })
 
       // Coverage circle
       L.circle([BASE_LAT, BASE_LNG], {
