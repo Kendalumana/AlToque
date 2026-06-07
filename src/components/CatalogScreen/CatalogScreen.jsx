@@ -4,8 +4,6 @@ import TopBar from '../TopBar/TopBar'
 import CategoryGrid from '../CategoryGrid/CategoryGrid'
 import ProductCard from '../ProductCard/ProductCard'
 import RestaurantCard from '../RestaurantCard/RestaurantCard'
-import { PRODUCTS } from '../../data/products'
-import { RESTAURANTS } from '../../data/restaurants'
 
 export default function CatalogScreen({ 
   onToggleCart, 
@@ -13,7 +11,9 @@ export default function CatalogScreen({
   onBack, 
   onChangeQty, 
   getQty, 
-  onOpenProximamente 
+  onOpenProximamente,
+  products,
+  restaurants 
 }) {
   const [currentCat, setCurrentCat] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
@@ -22,7 +22,7 @@ export default function CatalogScreen({
     setSearchQuery(e.target.value.toLowerCase())
   }
 
-  const filteredProducts = PRODUCTS.filter(p => {
+  const filteredProducts = products.filter(p => {
     const matchCat = currentCat === 'all' || p.cat === currentCat
     const matchSearch = !searchQuery || 
       p.name.toLowerCase().includes(searchQuery) || 
@@ -34,15 +34,15 @@ export default function CatalogScreen({
   let itemCount = 0
 
   if (currentCat === 'comida') {
-    itemCount = RESTAURANTS.length
+    itemCount = restaurants.length
   } else {
     itemCount = filteredProducts.length
     if (currentCat === 'all') {
       const rFiltered = searchQuery
-        ? RESTAURANTS.filter(r => 
+        ? restaurants.filter(r => 
             r.name.toLowerCase().includes(searchQuery) || 
             r.tag.toLowerCase().includes(searchQuery))
-        : RESTAURANTS
+        : restaurants
 
       if (rFiltered.length > 0) {
         restaurantCards = (
@@ -71,7 +71,7 @@ export default function CatalogScreen({
     if (currentCat === 'comida') {
       return (
         <div className="restaurant-grid">
-          {RESTAURANTS.map(r => (
+          {restaurants.map(r => (
             <RestaurantCard 
               key={r.id} 
               restaurant={r} 
