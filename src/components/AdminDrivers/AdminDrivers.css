@@ -526,6 +526,13 @@
     min-height: calc(100vh - 140px);
     overflow-y: visible;
   }
+  .admin-drivers-container.minimap-active .drivers-left-panel {
+    display: none;
+  }
+  .admin-drivers-container.minimap-active .drivers-right-area {
+    height: calc(100vh - 140px);
+    min-height: 480px;
+  }
   .drivers-left-panel {
     width: 100%;
     border-right: none;
@@ -534,53 +541,90 @@
   }
   .drivers-right-area {
     width: 100%;
-    height: 50vh;
-    min-height: 350px;
+    height: 380px;
+    min-height: unset;
     flex: none;
   }
-  .driver-detail-floating {
-    bottom: 12px;
-    left: 12px;
-    right: 12px;
-    min-width: unset;
-    padding: 12px;
+  
+  /* Ajuste responsivo de la barra de estadísticas */
+  .drivers-stats-bar {
+    padding: 10px 14px;
+    gap: 12px;
+    justify-content: space-between;
+  }
+  .drivers-stat {
+    font-size: 0.8rem;
+  }
+  .drivers-stat:last-child {
+    margin-left: 0 !important;
+    width: 100%;
+    border-top: 1px solid #222;
+    padding-top: 8px;
+    justify-content: space-between;
+  }
+
+  /* Ajuste responsivo del overlay de desarrollo */
+  .drivers-prox-overlay {
+    padding: 16px;
   }
   .drivers-prox-card {
-    padding: 20px 16px;
-    width: 90%;
+    padding: 24px 16px;
+    width: 100%;
+    max-width: 340px;
     border-radius: 16px;
   }
   .drivers-prox-card h3 {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     margin-bottom: 8px;
   }
   .drivers-prox-card p {
     font-size: 0.8rem;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
+    line-height: 1.4;
   }
   .drivers-prox-icon {
-    font-size: 2rem;
+    font-size: 2.2rem;
     margin-bottom: 8px;
+  }
+  .drivers-prox-btn {
+    padding: 12px 16px;
+    font-size: 0.82rem;
   }
 }
 
-/* ── NEW BUTTONS ── */
 .driver-floating-more-btn {
-  margin-top: 8px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: #fff;
-  padding: 6px 12px;
+  padding: 6px 10px;
   border-radius: 8px;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  width: 100%;
+  flex: 1;
 }
 .driver-floating-more-btn:hover {
   background: rgba(255, 255, 255, 0.15);
   border-color: rgba(255, 255, 255, 0.3);
+}
+
+.driver-floating-map-btn {
+  background: rgba(236,242,68,0.12);
+  border: 1px solid rgba(236,242,68,0.4);
+  color: var(--yellow-bright);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+  white-space: nowrap;
+}
+.driver-floating-map-btn:hover {
+  background: var(--yellow-bright);
+  color: #000;
 }
 
 .dm-edit-btn {
@@ -602,3 +646,90 @@
   border-color: var(--yellow-bright);
   color: #000;
 }
+
+/* ── MINI MAP PREVIEW (inline Leaflet) ── */
+.mini-map-wrapper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: #090c09;
+  animation: slideUp 0.35s cubic-bezier(.4,0,.2,1) both;
+  z-index: 2;
+}
+
+.mini-map-leaflet {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+}
+
+/* Badge top-left */
+.mini-map-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fff;
+  pointer-events: none;
+}
+
+.mini-map-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--yellow-bright);
+  box-shadow: 0 0 6px var(--yellow-bright);
+  animation: blink 1.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+/* Expand button bottom-right & Close button */
+.mini-map-expand-btn,
+.mini-map-close-btn {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  z-index: 500;
+  background: rgba(242, 116, 68, 0.12);
+  border: 1.5px solid rgba(242, 116, 68, 0.45);
+  color: #f27444;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(8px);
+}
+.mini-map-expand-btn:hover,
+.mini-map-close-btn:hover {
+  background: #f27444;
+  color: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(242, 116, 68, 0.3);
+}
+
+/* Override Leaflet controls visibility inside mini map */
+.mini-map-leaflet .leaflet-control-zoom { display: none; }
+.mini-map-leaflet .leaflet-control-attribution {
+  font-size: 0.55rem !important;
+  opacity: 0.5;
+}
+
+

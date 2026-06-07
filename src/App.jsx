@@ -6,6 +6,7 @@ import OtrosScreen from './components/OtrosScreen/OtrosScreen'
 import CartPanel from './components/CartPanel/CartPanel'
 import ProximamenteModal from './components/ProximamenteModal/ProximamenteModal'
 import AdminLayout from './components/AdminLayout/AdminLayout'
+import MapScreen from './components/MapScreen/MapScreen'
 import { useCart } from './hooks/useCart'
 import { PRODUCTS as INITIAL_PRODUCTS } from './data/products'
 import { RESTAURANTS as INITIAL_RESTAURANTS } from './data/restaurants'
@@ -52,6 +53,14 @@ function App() {
     setZone(null)
   }
 
+  const handleOpenMap = () => {
+    setScreen('map')
+  }
+
+  const handleBackFromMap = () => {
+    setScreen('catalog')
+  }
+
   // --- RENDERING PRINCIPAL ---
   if (!role) {
     return <RoleScreen onSelectRole={setRole} />
@@ -85,10 +94,15 @@ function App() {
           getQty={getQty}
           onOpenProximamente={setProximamenteRest}
           onExitRole={() => setRole(null)}
+          onOpenMap={handleOpenMap}
           // Injecting dynamic state
           products={products}
           restaurants={restaurants}
         />
+      )}
+
+      {screen === 'map' && (
+        <MapScreen onBack={handleBackFromMap} />
       )}
 
       {screen === 'otros' && (
