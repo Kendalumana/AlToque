@@ -32,10 +32,10 @@ export default function RoleScreen({ onSelectRole }) {
             className={`role-card ${selected === 'client' ? 'active' : ''}`}
             onClick={() => setSelected('client')}
           >
-            <div className="role-icon">🏋️</div>
+            <div className="role-icon">🙋</div>
             <div className="role-info">
-              <span className="role-title">Cliente / Usuario</span>
-              <span className="role-tag user-tag">👤 OPERADOR</span>
+              <span className="role-title">Usuario</span>
+              <span className="role-tag user-tag">👤 USUARIO</span>
             </div>
           </button>
 
@@ -56,7 +56,7 @@ export default function RoleScreen({ onSelectRole }) {
           disabled={!selected}
           onClick={handleConfirm}
         >
-          {selected === 'client' ? '🏋️ ENTRAR COMO OPERADOR' 
+          {selected === 'client' ? '🙋 ENTRAR COMO USUARIO' 
            : selected === 'admin' ? '🛡️ ENTRAR COMO ADMINISTRADOR' 
            : 'SELECCIONÁ UN PERFIL'}
         </button>
