@@ -205,8 +205,8 @@
     flex-direction: row;
     align-items: center;
     gap: 8px;
-    flex-wrap: nowrap;
-    overflow-x: auto;
+    flex-wrap: wrap;
+    overflow-x: hidden;
   }
   .admin-brand {
     margin-bottom: 0;
@@ -239,14 +239,28 @@
     justify-content: center;
     border-radius: 10px;
   }
-  /* Hide text labels on very small screens, show only icons */
+  /* Avoid hiding text labels so it stays responsive without removing letters */
   @media (max-width: 400px) {
-    .admin-nav-item > span:not(.nav-icon):not(.nav-badge) {
-      display: none;
-    }
     .admin-brand h2 { display: none; }
+    .admin-nav-item { padding: 8px 8px; font-size: 0.75rem; }
   }
-  .admin-sidebar-bottom { display: none; }
+  .admin-sidebar-bottom { 
+    display: flex; 
+    flex-direction: row; 
+    gap: 8px; 
+    width: 100%;
+    border-top: 1px solid #1e1e1e;
+    padding-top: 8px;
+    justify-content: center;
+  }
+  .admin-reset-btn, .admin-logout {
+    flex: 1;
+    text-align: center;
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    justify-content: center;
+  }
   .admin-header { height: auto; min-height: 56px; padding: 10px 16px; flex-wrap: wrap; gap: 6px; }
   .admin-header h1 { font-size: 1.05rem; }
   .admin-header-sub { display: none; }
