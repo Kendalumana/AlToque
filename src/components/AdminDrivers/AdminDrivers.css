@@ -45,6 +45,27 @@
   color: #fff;
 }
 
+.drivers-map-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  background: rgba(236,242,68,0.1);
+  border: 1px solid rgba(236,242,68,0.3);
+  color: var(--yellow-bright);
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.drivers-map-btn:hover {
+  background: rgba(236,242,68,0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(236,242,68,0.2);
+}
+
 /* ── MAP ── */
 .map-container {
   flex: 1;
