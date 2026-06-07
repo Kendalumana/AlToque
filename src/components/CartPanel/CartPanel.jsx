@@ -33,9 +33,9 @@ export default function CartPanel({ isOpen, onClose, cartItems, cartTotal, onCha
                   <div className="cart-item-price">₡{(item.product.price * item.qty).toLocaleString('es-CR')}</div>
                 </div>
                 <div className="cart-item-qty">
-                  <button className="qty-btn" onClick={() => onChangeQty(item.product.id, -1)}>−</button>
+                  <button className="qty-btn" onClick={() => onChangeQty(item.product, -1)}>−</button>
                   <span className="qty-num">{item.qty}</span>
-                  <button className="qty-btn" onClick={() => onChangeQty(item.product.id, 1)}>+</button>
+                  <button className="qty-btn" onClick={() => onChangeQty(item.product, 1)}>+</button>
                 </div>
               </div>
             ))

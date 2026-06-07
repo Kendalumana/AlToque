@@ -11,114 +11,167 @@ const CATEGORIES = [
   { id: 'ferreteria', label: 'Ferretería', emoji: '🔧' },
 ]
 
-const CAT_LABEL = { mandados: 'Mandados', super: 'Súper', farmacia: 'Farmacia', ferreteria: 'Ferretería' }
+const CAT_LABEL = {
+  mandados: 'Mandados', super: 'Súper', farmacia: 'Farmacia', ferreteria: 'Ferretería'
+}
 
-// ── Modal Confirmación Eliminar ────────────────────────────
-function DeleteConfirmModal({ item, onConfirm, onCancel }) {
+/* ─────────────────────────────────────────────────────────
+   Modal Editar Local (solo vista, próximamente real)
+───────────────────────────────────────────────────────── */
+function EditLocalModal({ local, onClose }) {
   return (
-    <div className="ac-modal-overlay" onClick={e => e.target === e.currentTarget && onCancel()}>
-      <div className="ac-modal-box fade-up">
-        <div className="ac-modal-icon">🗑️</div>
-        <h3>¿Eliminar este item?</h3>
-        <p>
-          <strong>{item.emoji} {item.name || item.tag}</strong><br />
-          Esta acción no se puede deshacer.
-        </p>
-        <div className="ac-modal-actions">
-          <button className="ac-modal-cancel" onClick={onCancel}>Cancelar</button>
-          <button className="ac-modal-confirm" onClick={onConfirm}>Siguiente →</button>
+    <div className="ac-modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="ac-modal-box ac-form-box fade-up">
+        <button className="ac-modal-x" onClick={onClose}>✕</button>
+        <div className="ac-modal-icon">✏️</div>
+        <h3>Editar Local</h3>
+        <p className="ac-form-subtitle">Vista previa de edición para <strong>{local.name}</strong></p>
+
+        <div className="ac-form-group">
+          <label>Emoji</label>
+          <input className="ac-form-input small-c" defaultValue={local.emoji} />
         </div>
+        <div className="ac-form-group">
+          <label>Nombre del local</label>
+          <input className="ac-form-input" defaultValue={local.name} />
+        </div>
+        <div className="ac-form-group">
+          <label>Categoría / Tag</label>
+          <input className="ac-form-input" defaultValue={local.tag} />
+        </div>
+
+        <div className="ac-prox-banner">
+          <span className="ac-prox-badge">🚀 Próximamente</span>
+          <p>La edición real de locales se habilitará junto con la integración a base de datos. Por ahora es modo demostración.</p>
+        </div>
+
+        <button className="ac-modal-confirm full-btn" onClick={onClose}>Entendido</button>
       </div>
     </div>
   )
 }
 
-// ── Modal Formulario Nuevo Local (ficticio) ─────────────────
+/* ─────────────────────────────────────────────────────────
+   Modal Agregar Nuevo Local — formulario animado en pasos
+───────────────────────────────────────────────────────── */
 function AddLocalModal({ onClose }) {
   const [step, setStep] = useState(1)
-  const [form, setForm] = useState({ emoji: '🍽️', name: '', tag: '', desc: '' })
-
-  const handleChange = (field, val) => setForm(f => ({ ...f, [field]: val }))
+  const TOTAL = 3
+  const [form, setForm] = useState({ emoji: '🍽️', name: '', tag: '', phone: '', schedule: '' })
+  const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
   return (
     <div className="ac-modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="ac-modal-box ac-form-box fade-up">
+        <button className="ac-modal-x" onClick={onClose}>✕</button>
+
+        {/* Progress bar */}
+        <div className="ac-steps-bar">
+          {[1,2,3].map(n => (
+            <div key={n} className={`ac-step-dot ${step >= n ? 'done' : ''} ${step === n ? 'current' : ''}`}>
+              {step > n ? '✓' : n}
+            </div>
+          ))}
+          <div className="ac-steps-track">
+            <div className="ac-steps-fill" style={{ width: `${((step-1)/(TOTAL-1))*100}%` }} />
+          </div>
+        </div>
+
+        {/* ── Paso 1: Info básica ── */}
         {step === 1 && (
-          <>
+          <div className="ac-step-content fade-up">
             <div className="ac-modal-icon">🏪</div>
-            <h3>Nuevo Local de Comida</h3>
-            <p className="ac-form-subtitle">Completá los datos básicos del establecimiento.</p>
-            <div className="ac-form-group">
-              <label>Emoji del local</label>
-              <input className="ac-form-input small-c" value={form.emoji} onChange={e => handleChange('emoji', e.target.value)} maxLength={2} />
+            <h3>Nuevo Local</h3>
+            <p className="ac-form-subtitle">Información básica del establecimiento</p>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <div className="ac-form-group" style={{ width: 70, flexShrink: 0 }}>
+                <label>Icono</label>
+                <input className="ac-form-input small-c" value={form.emoji} onChange={e => set('emoji', e.target.value)} maxLength={2} />
+              </div>
+              <div className="ac-form-group" style={{ flex: 1 }}>
+                <label>Nombre</label>
+                <input className="ac-form-input" placeholder="Ej: La Soda de Doña Ana" value={form.name} onChange={e => set('name', e.target.value)} />
+              </div>
             </div>
             <div className="ac-form-group">
-              <label>Nombre del local</label>
-              <input className="ac-form-input" placeholder="Ej: La Soda de Doña Ana" value={form.name} onChange={e => handleChange('name', e.target.value)} />
-            </div>
-            <div className="ac-form-group">
-              <label>Categoría / Tipo de comida</label>
-              <input className="ac-form-input" placeholder="Ej: Comida casera · Almuerzo" value={form.tag} onChange={e => handleChange('tag', e.target.value)} />
+              <label>Tipo de comida</label>
+              <input className="ac-form-input" placeholder="Ej: Comida casera · Almuerzos" value={form.tag} onChange={e => set('tag', e.target.value)} />
             </div>
             <div className="ac-modal-actions">
               <button className="ac-modal-cancel" onClick={onClose}>Cancelar</button>
-              <button className="ac-modal-confirm" onClick={() => setStep(2)} disabled={!form.name}>
+              <button className="ac-modal-confirm" disabled={!form.name} onClick={() => setStep(2)}>
                 Siguiente →
               </button>
             </div>
-          </>
+          </div>
         )}
+
+        {/* ── Paso 2: Contacto ── */}
         {step === 2 && (
-          <>
-            <div className="ac-modal-icon">📸</div>
-            <h3>Foto y descripción</h3>
-            <p className="ac-form-subtitle">Agregá una imagen y descripción del local.</p>
+          <div className="ac-step-content fade-up">
+            <div className="ac-modal-icon">📞</div>
+            <h3>Contacto y horario</h3>
+            <p className="ac-form-subtitle">Datos de contacto del local</p>
             <div className="ac-form-group">
-              <label>URL de imagen</label>
-              <input className="ac-form-input" placeholder="https://…" />
-              <span className="ac-form-hint">Próximamente: subida directa de fotos</span>
+              <label>Teléfono / WhatsApp</label>
+              <input className="ac-form-input" placeholder="Ej: 8800-0000" value={form.phone} onChange={e => set('phone', e.target.value)} />
             </div>
             <div className="ac-form-group">
-              <label>Descripción breve</label>
-              <textarea className="ac-form-input ac-textarea" placeholder="Describe el local y sus especialidades…" value={form.desc} onChange={e => handleChange('desc', e.target.value)} rows={3} />
+              <label>Horario de atención</label>
+              <input className="ac-form-input" placeholder="Ej: Lun–Sáb 7am–9pm" value={form.schedule} onChange={e => set('schedule', e.target.value)} />
+            </div>
+            <div className="ac-form-group">
+              <label>Foto del local</label>
+              <div className="ac-upload-placeholder">
+                <span>📷</span>
+                <span>Subida de fotos — Próximamente</span>
+              </div>
             </div>
             <div className="ac-modal-actions">
               <button className="ac-modal-cancel" onClick={() => setStep(1)}>← Atrás</button>
               <button className="ac-modal-confirm" onClick={() => setStep(3)}>Siguiente →</button>
             </div>
-          </>
+          </div>
         )}
+
+        {/* ── Paso 3: Confirmación / Próximamente ── */}
         {step === 3 && (
-          <>
-            <div className="ac-modal-icon success-icon">✅</div>
-            <h3>¡Local registrado!</h3>
+          <div className="ac-step-content fade-up" style={{ textAlign: 'center' }}>
+            <div className="ac-modal-icon" style={{ fontSize: '3.5rem' }}>🎉</div>
+            <h3>¡Listo!</h3>
             <div className="ac-preview-card">
               <span className="ac-preview-emoji">{form.emoji}</span>
               <div>
                 <strong>{form.name || 'Nuevo Local'}</strong>
                 <p>{form.tag || 'Sin categoría'}</p>
+                {form.phone && <p>📞 {form.phone}</p>}
               </div>
             </div>
-            <div className="ac-prox-note">
-              <span>🚀</span>
-              <span>La integración real con la base de datos estará disponible próximamente. Por ahora los datos se guardan en modo demostración.</span>
+            <div className="ac-prox-banner">
+              <span className="ac-prox-badge">🚀 Próximamente</span>
+              <p>
+                El registro real de locales estará disponible cuando se integre la base de datos.
+                Tus datos han sido guardados en modo demostración local.
+              </p>
             </div>
-            <button className="ac-modal-confirm full-btn" onClick={onClose}>Entendido</button>
-          </>
+            <button className="ac-modal-confirm full-btn" onClick={onClose}>Entendido ✓</button>
+          </div>
         )}
       </div>
     </div>
   )
 }
 
-// ── Componente Principal ────────────────────────────────────
+/* ─────────────────────────────────────────────────────────
+   Componente Principal
+───────────────────────────────────────────────────────── */
 export default function AdminCatalog({ products, setProducts, restaurants, setRestaurants }) {
   const [activeTab, setActiveTab] = useState('restaurants')
   const [filterCat, setFilterCat] = useState('all')
-  const [deleteTarget, setDeleteTarget] = useState(null)   // { type: 'product'|'restaurant', item }
+  const [editLocal, setEditLocal] = useState(null)
   const [showAddLocal, setShowAddLocal] = useState(false)
 
-  // Resetear localStorage y recargar datos originales al montar
+  // Reset localStorage y recargar datos originales al montar
   useEffect(() => {
     localStorage.removeItem('alToqueProducts')
     localStorage.removeItem('alToqueRestaurants')
@@ -127,29 +180,13 @@ export default function AdminCatalog({ products, setProducts, restaurants, setRe
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const handleConfirmDelete = () => {
-    if (!deleteTarget) return
-    if (deleteTarget.type === 'product') {
-      setProducts(prev => prev.filter(p => p.id !== deleteTarget.item.id))
-    } else {
-      setRestaurants(prev => prev.filter(r => r.id !== deleteTarget.item.id))
-    }
-    setDeleteTarget(null)
-  }
-
-  const filteredProducts = filterCat === 'all' ? products : products.filter(p => p.cat === filterCat)
+  const filteredProducts = filterCat === 'all'
+    ? products
+    : products.filter(p => p.cat === filterCat)
 
   return (
     <div className="admin-catalog">
-
-      {/* Modals */}
-      {deleteTarget && (
-        <DeleteConfirmModal
-          item={deleteTarget.item}
-          onConfirm={handleConfirmDelete}
-          onCancel={() => setDeleteTarget(null)}
-        />
-      )}
+      {editLocal   && <EditLocalModal local={editLocal} onClose={() => setEditLocal(null)} />}
       {showAddLocal && <AddLocalModal onClose={() => setShowAddLocal(false)} />}
 
       {/* Tabs */}
@@ -162,7 +199,7 @@ export default function AdminCatalog({ products, setProducts, restaurants, setRe
         </button>
       </div>
 
-      {/* ── RESTAURANTES ─────────────────────────────────── */}
+      {/* ── RESTAURANTES ── */}
       {activeTab === 'restaurants' && (
         <div className="admin-section fade-up">
           <div className="admin-section-header">
@@ -178,8 +215,7 @@ export default function AdminCatalog({ products, setProducts, restaurants, setRe
                 <tr>
                   <th>Local</th>
                   <th>Categoría</th>
-                  <th>Estilo de color</th>
-                  <th></th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -195,14 +231,13 @@ export default function AdminCatalog({ products, setProducts, restaurants, setRe
                       <span className="ac-tag-chip">{r.tag}</span>
                     </td>
                     <td>
-                      <span className="ac-prox-chip">🎨 Próximamente</span>
-                    </td>
-                    <td>
                       <button
-                        className="ac-delete-btn"
-                        onClick={() => setDeleteTarget({ type: 'restaurant', item: r })}
-                        title="Eliminar"
-                      >✕</button>
+                        className="ac-edit-btn"
+                        onClick={() => setEditLocal(r)}
+                        title="Editar local"
+                      >
+                        ✏️ Editar
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -212,7 +247,7 @@ export default function AdminCatalog({ products, setProducts, restaurants, setRe
         </div>
       )}
 
-      {/* ── PRODUCTOS ────────────────────────────────────── */}
+      {/* ── PRODUCTOS ── */}
       {activeTab === 'products' && (
         <div className="admin-section fade-up">
           <div className="admin-section-header">
@@ -222,7 +257,6 @@ export default function AdminCatalog({ products, setProducts, restaurants, setRe
             </div>
           </div>
 
-          {/* Filtro por categoría */}
           <div className="ac-cat-filter">
             {CATEGORIES.map(c => (
               <button
@@ -246,7 +280,6 @@ export default function AdminCatalog({ products, setProducts, restaurants, setRe
                   <th>Categoría</th>
                   <th>Tienda</th>
                   <th>Precio</th>
-                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -258,26 +291,13 @@ export default function AdminCatalog({ products, setProducts, restaurants, setRe
                         <span className="ac-item-name">{p.name}</span>
                       </div>
                     </td>
-                    <td>
-                      <span className="ac-cat-chip">{CAT_LABEL[p.cat] || p.cat}</span>
-                    </td>
+                    <td><span className="ac-cat-chip">{CAT_LABEL[p.cat] || p.cat}</span></td>
                     <td className="ac-muted">{p.shop}</td>
-                    <td>
-                      <span className="ac-price">₡{p.price.toLocaleString()}</span>
-                    </td>
-                    <td>
-                      <button
-                        className="ac-delete-btn"
-                        onClick={() => setDeleteTarget({ type: 'product', item: p })}
-                        title="Eliminar"
-                      >✕</button>
-                    </td>
+                    <td><span className="ac-price">₡{p.price.toLocaleString()}</span></td>
                   </tr>
                 ))}
                 {filteredProducts.length === 0 && (
-                  <tr>
-                    <td colSpan={5} className="ac-empty-row">Sin productos en esta categoría</td>
-                  </tr>
+                  <tr><td colSpan={4} className="ac-empty-row">Sin productos en esta categoría</td></tr>
                 )}
               </tbody>
             </table>

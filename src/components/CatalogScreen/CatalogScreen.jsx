@@ -13,7 +13,8 @@ export default function CatalogScreen({
   getQty, 
   onOpenProximamente,
   products,
-  restaurants 
+  restaurants,
+  onExitRole
 }) {
   const [currentCat, setCurrentCat] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
@@ -110,7 +111,7 @@ export default function CatalogScreen({
   return (
     <div className="screen fade-up active">
       <div className="app-shell">
-        <TopBar cartCount={cartCount} onToggleCart={onToggleCart} />
+        <TopBar cartCount={cartCount} onToggleCart={onToggleCart} onExitRole={onExitRole} />
 
         <div className="zone-pill">
           <span className="zone-pill-icon">📍</span>

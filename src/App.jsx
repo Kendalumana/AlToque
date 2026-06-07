@@ -84,6 +84,7 @@ function App() {
           onChangeQty={changeQty}
           getQty={getQty}
           onOpenProximamente={setProximamenteRest}
+          onExitRole={() => setRole(null)}
           // Injecting dynamic state
           products={products}
           restaurants={restaurants}

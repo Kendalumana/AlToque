@@ -10,7 +10,6 @@
   gap: 8px;
   margin-bottom: 24px;
 }
-
 .ac-tab {
   display: flex;
   align-items: center;
@@ -23,24 +22,22 @@
   background: #141414;
   border: 1px solid #2a2a2a;
   transition: all 0.2s;
+  cursor: pointer;
 }
 .ac-tab:hover { color: #fff; background: #1f1f1f; }
 .ac-tab.active {
-  background: rgba(236,242,68,0.12);
+  background: rgba(236,242,68,0.1);
   color: var(--yellow-bright);
   border-color: rgba(236,242,68,0.3);
 }
-
 .ac-count {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.07);
   padding: 2px 8px;
   border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.73rem;
+  font-weight: 700;
 }
-.ac-tab.active .ac-count {
-  background: rgba(236,242,68,0.2);
-}
+.ac-tab.active .ac-count { background: rgba(236,242,68,0.18); }
 
 /* ── SECTION ── */
 .admin-section {
@@ -49,7 +46,6 @@
   border: 1px solid #222;
   overflow: hidden;
 }
-
 .admin-section-header {
   padding: 20px 24px;
   border-bottom: 1px solid #222;
@@ -60,19 +56,21 @@
   gap: 16px;
 }
 .admin-section-header h2 { font-size: 1.1rem; color: #fff; font-weight: 700; margin-bottom: 4px; }
-.admin-section-header p { font-size: 0.82rem; color: #888; }
+.admin-section-header p  { font-size: 0.82rem; color: #777; }
 
-/* ── ADD / DELETE BUTTONS ── */
+/* ── BOTÓN AGREGAR ── */
 .ac-add-btn {
   background: var(--yellow-bright);
   color: #000;
   font-weight: 800;
   font-size: 0.85rem;
-  padding: 10px 18px;
+  padding: 10px 20px;
   border-radius: 10px;
   white-space: nowrap;
   transition: all 0.2s;
   flex-shrink: 0;
+  cursor: pointer;
+  border: none;
 }
 .ac-add-btn:hover {
   background: var(--yellow-warm);
@@ -80,25 +78,7 @@
   box-shadow: 0 4px 16px rgba(236,242,68,0.25);
 }
 
-.ac-delete-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  color: #f24b4b;
-  background: rgba(242,75,75,0.1);
-  font-size: 0.75rem;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-}
-.ac-delete-btn:hover {
-  background: rgba(242,75,75,0.25);
-  transform: scale(1.1);
-}
-
-/* ── CATEGORY FILTER PILLS ── */
+/* ── FILTRO CATEGORÍAS ── */
 .ac-cat-filter {
   display: flex;
   gap: 8px;
@@ -106,7 +86,6 @@
   border-bottom: 1px solid #222;
   flex-wrap: wrap;
 }
-
 .ac-cat-pill {
   display: flex;
   align-items: center;
@@ -115,124 +94,370 @@
   border-radius: 20px;
   font-size: 0.82rem;
   font-weight: 600;
-  color: #888;
+  color: #777;
   background: #1a1a1a;
   border: 1px solid #2a2a2a;
   transition: all 0.2s;
+  cursor: pointer;
 }
 .ac-cat-pill:hover { color: #fff; background: #222; }
 .ac-cat-pill.active {
-  background: rgba(236,242,68,0.12);
+  background: rgba(236,242,68,0.1);
   color: var(--yellow-bright);
   border-color: rgba(236,242,68,0.35);
 }
 
-/* ── TABLE ── */
-.admin-table-wrapper {
-  overflow-x: auto;
-}
-
-.admin-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
+/* ── TABLA ── */
+.admin-table-wrapper { overflow-x: auto; }
+.admin-table { width: 100%; border-collapse: collapse; }
 .admin-table th, .admin-table td {
-  padding: 12px 16px;
+  padding: 13px 20px;
   text-align: left;
-  border-bottom: 1px solid #222;
+  border-bottom: 1px solid #1e1e1e;
 }
-
 .admin-table th {
-  font-size: 0.75rem;
+  font-size: 0.73rem;
   font-weight: 700;
-  color: #666;
+  color: #555;
   text-transform: uppercase;
   letter-spacing: 0.8px;
   background: #111;
 }
+.admin-table td { background: #141414; }
+.admin-table tr:hover td { background: #181818; }
+.admin-table tr:last-child td { border-bottom: none; }
 
-.admin-table td {
-  background: #141414;
-}
-
-.admin-table tr:hover td {
-  background: #181818;
-}
-
-.admin-table tr:last-child td {
-  border-bottom: none;
-}
-
-/* ── INPUTS ── */
-.admin-input {
+/* ── CELDAS ── */
+.ac-item-cell { display: flex; align-items: center; gap: 12px; }
+.ac-item-emoji {
+  font-size: 1.3rem;
+  width: 38px;
+  height: 38px;
   background: #1e1e1e;
-  border: 1px solid #333;
-  color: #fff;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  width: 100%;
-  transition: all 0.2s;
-  outline: none;
-  font-family: var(--font);
-}
-.admin-input:focus {
-  border-color: var(--yellow-bright);
-  background: #252525;
-  box-shadow: 0 0 0 2px rgba(236,242,68,0.1);
-}
-.admin-input.small { width: 52px; text-align: center; font-size: 1.1rem; padding: 6px; }
-.admin-input.small-num { width: 90px; }
-.admin-input.small-hex { width: 110px; font-family: monospace; font-size: 0.85rem; }
-
-.admin-select {
-  cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  padding-right: 28px;
-  min-width: 130px;
-}
-.admin-select option { background: #1e1e1e; color: #fff; }
-
-.color-input-wrap {
+  border-radius: 10px;
   display: flex;
   align-items: center;
-  gap: 8px;
-}
-
-.color-preview {
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
-  border: 1px solid #444;
+  justify-content: center;
   flex-shrink: 0;
 }
+.ac-item-name { font-size: 0.92rem; font-weight: 600; color: #e0e0e0; }
 
-/* ── EMPTY ROW ── */
+.ac-tag-chip {
+  display: inline-block;
+  background: rgba(255,255,255,0.05);
+  color: #aaa;
+  font-size: 0.78rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid #2a2a2a;
+}
+.ac-cat-chip {
+  display: inline-block;
+  background: rgba(236,242,68,0.08);
+  color: var(--yellow-bright);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(236,242,68,0.2);
+}
+.ac-price { font-size: 0.9rem; font-weight: 700; color: var(--yellow-bright); }
+.ac-muted { color: #777; font-size: 0.88rem; }
+
+/* ── BOTÓN EDITAR ── */
+.ac-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 9px;
+  color: #aaa;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid #2a2a2a;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ac-edit-btn:hover {
+  background: rgba(236,242,68,0.1);
+  color: var(--yellow-bright);
+  border-color: rgba(236,242,68,0.3);
+  transform: translateY(-1px);
+}
+
+/* ── VACÍO ── */
 .ac-empty-row {
   text-align: center;
   color: #555;
   font-size: 0.9rem;
-  padding: 32px !important;
+  padding: 40px !important;
   font-style: italic;
 }
 
-/* ── TOAST ── */
-.ac-toast {
+/* ══════════════════════════════════════════
+   MODALS
+══════════════════════════════════════════ */
+.ac-modal-overlay {
   position: fixed;
-  bottom: 32px;
-  right: 32px;
-  background: #1e1e1e;
-  border: 1px solid var(--yellow-bright);
+  inset: 0;
+  background: rgba(0,0,0,0.78);
+  backdrop-filter: blur(8px);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.ac-modal-box {
+  background: #161616;
+  border: 1px solid #2a2a2a;
+  border-radius: 22px;
+  padding: 36px;
+  width: min(440px, 100%);
+  text-align: center;
+  box-shadow: 0 28px 70px rgba(0,0,0,0.75);
+  position: relative;
+}
+.ac-form-box { text-align: left; }
+
+/* Botón X cerrar */
+.ac-modal-x {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: #222;
+  color: #888;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid #333;
+  transition: all 0.2s;
+}
+.ac-modal-x:hover { background: #2a2a2a; color: #fff; }
+
+.ac-modal-icon { font-size: 2.8rem; margin-bottom: 14px; text-align: center; }
+
+.ac-modal-box h3 {
+  font-size: 1.2rem;
+  font-weight: 800;
   color: #fff;
-  padding: 14px 22px;
-  border-radius: 12px;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+/* ── STEP PROGRESS BAR ── */
+.ac-steps-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 28px;
+  position: relative;
+}
+.ac-steps-track {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background: #2a2a2a;
+  transform: translateY(-50%);
+  z-index: 0;
+}
+.ac-steps-fill {
+  height: 100%;
+  background: var(--yellow-bright);
+  transition: width 0.4s ease;
+}
+.ac-step-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #222;
+  border: 2px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #555;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s;
+  flex-shrink: 0;
+  margin: 0 40px;
+}
+.ac-step-dot.done {
+  background: rgba(236,242,68,0.2);
+  border-color: var(--yellow-bright);
+  color: var(--yellow-bright);
+}
+.ac-step-dot.current {
+  background: var(--yellow-bright);
+  border-color: var(--yellow-bright);
+  color: #000;
+  box-shadow: 0 0 16px rgba(236,242,68,0.4);
+}
+
+.ac-step-content { }
+
+/* ── FORM ELEMENTS ── */
+.ac-form-subtitle {
+  font-size: 0.83rem;
+  color: #888;
+  margin-bottom: 20px;
+  text-align: left;
+}
+.ac-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.ac-form-group label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #777;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.ac-form-input {
+  background: #1e1e1e;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 11px 14px;
+  border-radius: 10px;
   font-size: 0.9rem;
-  font-weight: 600;
-  z-index: 999;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.5), 0 0 20px rgba(236,242,68,0.15);
-  animation: slideUp 0.3s ease both;
+  width: 100%;
+  font-family: var(--font);
+  outline: none;
+  transition: all 0.2s;
+}
+.ac-form-input:focus {
+  border-color: var(--yellow-bright);
+  background: #252525;
+  box-shadow: 0 0 0 3px rgba(236,242,68,0.08);
+}
+.ac-form-input.small-c {
+  width: 60px;
+  text-align: center;
+  font-size: 1.4rem;
+  padding: 8px;
+}
+
+/* Placeholder upload */
+.ac-upload-placeholder {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #1a1a1a;
+  border: 2px dashed #2a2a2a;
+  border-radius: 10px;
+  padding: 16px;
+  font-size: 0.85rem;
+  color: #555;
+  cursor: not-allowed;
+}
+
+/* ── ACCIONES ── */
+.ac-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+.ac-modal-cancel {
+  flex: 1;
+  padding: 13px;
+  background: #222;
+  color: #aaa;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  border: 1px solid #333;
+  transition: all 0.2s;
+}
+.ac-modal-cancel:hover { background: #2a2a2a; color: #fff; }
+.ac-modal-confirm {
+  flex: 1;
+  padding: 13px;
+  background: var(--yellow-bright);
+  color: #000;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 0.88rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+.ac-modal-confirm:hover { background: var(--yellow-warm); transform: translateY(-1px); }
+.ac-modal-confirm:disabled {
+  background: #2a2a2a;
+  color: #555;
+  cursor: not-allowed;
+  transform: none;
+}
+.ac-modal-confirm.full-btn { width: 100%; margin-top: 6px; flex: none; }
+
+/* ── PREVIEW CARD ── */
+.ac-preview-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 14px;
+  padding: 16px;
+  margin: 14px 0;
+  text-align: left;
+}
+.ac-preview-emoji {
+  font-size: 2rem;
+  width: 52px;
+  height: 52px;
+  background: #2a2a2a;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ac-preview-card strong { font-size: 1rem; color: #fff; display: block; }
+.ac-preview-card p { font-size: 0.78rem; color: #888; margin-top: 2px; }
+
+/* ── BANNER PRÓXIMAMENTE ── */
+.ac-prox-banner {
+  background: rgba(236,242,68,0.04);
+  border: 1px dashed rgba(236,242,68,0.25);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 18px;
+  text-align: center;
+}
+.ac-prox-badge {
+  display: inline-block;
+  background: rgba(236,242,68,0.12);
+  color: var(--yellow-bright);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(236,242,68,0.25);
+  margin-bottom: 10px;
+}
+.ac-prox-banner p {
+  font-size: 0.8rem;
+  color: #777;
+  line-height: 1.6;
+  margin: 0;
+  text-align: center;
 }
