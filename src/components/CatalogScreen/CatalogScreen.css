@@ -1,24 +1,82 @@
 .zone-pill {
   display: flex;
   align-items: center;
-  gap: 6px;
+  flex-wrap: wrap;
+  gap: 6px 8px;
   padding: 10px 16px;
   background: rgba(236,242,68,0.07);
   border-bottom: 1px solid rgba(236,242,68,0.1);
   font-size: 0.85rem;
   color: var(--text-on-dark);
 }
-.zone-pill-icon { font-size: 0.9rem; }
-.cambiar-btn {
-  margin-left: auto;
+
+.zone-pill-icon { font-size: 0.9rem; flex-shrink: 0; }
+
+/* Zone label — grows to fill available space so buttons wrap naturally */
+.zone-pill > span:not(.zone-pill-icon) {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ver-mapa-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  background: rgba(236,242,68,0.09);
+  border: 1.5px solid rgba(236,242,68,0.28);
+  border-radius: 20px;
   color: var(--yellow-bright);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.ver-mapa-btn:hover {
+  background: rgba(236,242,68,0.18);
+  box-shadow: 0 0 10px rgba(236,242,68,0.18);
+}
+
+.cambiar-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  color: var(--text-muted);
+  font-size: 0.8rem;
   font-weight: 600;
   text-decoration: underline;
   background: none;
+  border: none;
+  cursor: pointer;
   transition: var(--transition);
+  flex-shrink: 0;
+  white-space: nowrap;
 }
-.cambiar-btn:hover { color: var(--yellow-warm); }
+.cambiar-btn:hover { color: var(--text-on-dark); }
+
+/* ── Responsive: on very small screens, buttons go to their own row ── */
+@media (max-width: 380px) {
+  .zone-pill {
+    padding: 8px 14px;
+  }
+  /* Push action buttons to second line */
+  .ver-mapa-btn,
+  .cambiar-btn {
+    flex-basis: auto;
+  }
+  /* Make the zone label take full width so buttons wrap below */
+  .zone-pill > span:not(.zone-pill-icon) {
+    flex-basis: 100%;
+  }
+  .zone-pill-icon {
+    display: none; /* save space */
+  }
+}
 
 .search-bar-wrap {
   display: flex;

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import './MapModal.css'
+import './MapScreen.css'
 import { DRIVERS_DATA } from '../DriversModal/DriversModal'
 
 // Coordenadas base — Miramar, Puntarenas
@@ -12,7 +12,7 @@ const STATUS_COLOR = {
   'Descanso':   '#f27444',
 }
 
-export default function MapModal({ isAdmin, selectedDriverId, onClose }) {
+export default function MapScreen({ onBack, selectedDriverId }) {
   const mapRef = useRef(null)
   const mapInstanceRef = useRef(null)
 
@@ -20,8 +20,7 @@ export default function MapModal({ isAdmin, selectedDriverId, onClose }) {
     let isMounted = true
     let mapInstance = null
 
-    // Importar Leaflet dinámicamente
-    import('leaflet').then(leaflet => {
+    import('leaflet').then(async leaflet => {
       if (!isMounted) return
       const L = leaflet.default
 
@@ -33,13 +32,11 @@ export default function MapModal({ isAdmin, selectedDriverId, onClose }) {
         mapInstanceRef.current = null
       }
 
-      // Determinar centro del mapa
+      // Center on selected driver if provided
       let centerCoords = [BASE_LAT, BASE_LNG]
       if (selectedDriverId) {
-        const selectedDriver = DRIVERS_DATA.find(d => d.id === selectedDriverId)
-        if (selectedDriver) {
-          centerCoords = [selectedDriver.lat, selectedDriver.lng]
-        }
+        const sd = DRIVERS_DATA.find(d => d.id === selectedDriverId)
+        if (sd) centerCoords = [sd.lat, sd.lng]
       }
 
       const map = L.map(mapRef.current, {
@@ -49,17 +46,14 @@ export default function MapModal({ isAdmin, selectedDriverId, onClose }) {
         attributionControl: false,
       })
 
-      // Invalidate size to prevent layout issues on mount
       setTimeout(() => {
-        if (isMounted && map) {
-          map.invalidateSize()
-        }
+        if (isMounted && map) map.invalidateSize()
       }, 100)
 
       mapInstance = map
       mapInstanceRef.current = map
 
-      // ── Tiles oscuros: CartoDB Dark Matter (gratuitos, sin API key) ──
+      // Tiles oscuros CartoDB Dark Matter
       L.tileLayer(
         'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
         {
@@ -69,10 +63,10 @@ export default function MapModal({ isAdmin, selectedDriverId, onClose }) {
         }
       ).addTo(map)
 
-      // Zoom controls personalizados (esquina inferior derecha)
+      // Zoom controls esquina inferior derecha
       L.control.zoom({ position: 'bottomright' }).addTo(map)
 
-      // ── Pin central (sede / base) ──
+      // Pin central (base)
       const baseIcon = L.divIcon({
         className: '',
         html: `
@@ -94,7 +88,7 @@ export default function MapModal({ isAdmin, selectedDriverId, onClose }) {
           </div>
         `, { className: 'dark-popup' })
 
-      // ── Pines de choferes ──
+      // Pines de choferes
       DRIVERS_DATA.forEach(driver => {
         const color = STATUS_COLOR[driver.status] || '#ECF244'
         const driverIcon = L.divIcon({
@@ -110,33 +104,21 @@ export default function MapModal({ isAdmin, selectedDriverId, onClose }) {
           iconAnchor: [28, 48],
         })
 
-        const marker = L.marker([driver.lat, driver.lng], { icon: driverIcon })
-          .addTo(map)
+        const marker = L.marker([driver.lat, driver.lng], { icon: driverIcon }).addTo(map)
 
-        let popupHtml = `
+        marker.bindPopup(`
           <div class="map-popup">
             <strong>${driver.name}</strong><br/>
             <span style="color:${color}">● ${driver.status}</span><br/>
             <span style="color:#aaa; font-size:0.8em">📦 ${driver.tripsToday} viajes hoy</span>
-        `
+          </div>
+        `, { className: 'dark-popup' })
 
-        if (isAdmin) {
-          popupHtml += `
-            <button class="driver-popup-more-btn" onclick="window.openDriverDetail(${driver.id})">Ver más detalles</button>
-          `
-        }
-
-        popupHtml += `</div>`
-
-        marker.bindPopup(popupHtml, { className: 'dark-popup' })
-
-        // Si es el chofer seleccionado, abrir su popup automáticamente
+        // Auto-open popup if this is the selected driver
         if (selectedDriverId && driver.id === selectedDriverId) {
           setTimeout(() => {
-            if (isMounted) {
-              marker.openPopup()
-            }
-          }, 200)
+            if (isMounted) marker.openPopup()
+          }, 350)
         }
       })
 
@@ -150,7 +132,6 @@ export default function MapModal({ isAdmin, selectedDriverId, onClose }) {
         dashArray: '6 6',
         opacity: 0.35,
       }).addTo(map)
-
     })
 
     return () => {
@@ -162,52 +143,45 @@ export default function MapModal({ isAdmin, selectedDriverId, onClose }) {
         mapInstanceRef.current = null
       }
     }
-  }, [selectedDriverId, isAdmin])
-
-  // Cerrar con Escape
-  useEffect(() => {
-    const handleKey = (e) => { if (e.key === 'Escape') onClose() }
-    window.addEventListener('keydown', handleKey)
-    return () => window.removeEventListener('keydown', handleKey)
-  }, [onClose])
+  }, [])
 
   return (
-    <div className="map-modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="map-modal-container">
+    <div className="map-screen">
 
-        {/* Header */}
-        <div className="map-modal-header">
-          <div className="map-modal-title">
-            <span className="map-modal-dot"></span>
-            <span>Miramar en Vivo</span>
-            <span className="map-modal-sub">· Miramar, Puntarenas, Costa Rica</span>
-          </div>
-          <div className="map-modal-legend">
-            {Object.entries(STATUS_COLOR).map(([status, color]) => (
-              <div key={status} className="map-legend-item">
-                <div className="map-legend-dot" style={{ background: color }}></div>
-                <span>{status}</span>
-              </div>
-            ))}
-          </div>
-          <button className="map-modal-close" onClick={onClose}>✕</button>
+      {/* Header */}
+      <div className="map-screen-header">
+        <button className="map-screen-back" onClick={onBack} aria-label="Volver">
+          ‹ Volver
+        </button>
+        <div className="map-screen-title">
+          <span className="map-screen-dot"></span>
+          <span>Miramar en Vivo</span>
+          <span className="map-screen-sub">· Miramar, Puntarenas</span>
         </div>
-
-        {/* Map */}
-        <div className="map-modal-map" ref={mapRef}></div>
-
-        {/* Footer */}
-        <div className="map-modal-footer">
-          <span>📍 {BASE_LAT.toFixed(5)}, {BASE_LNG.toFixed(5)}</span>
-          <span className="map-footer-sep">·</span>
-          <span>🛵 {DRIVERS_DATA.filter(d => d.status === 'Disponible').length} disponibles</span>
-          <span className="map-footer-sep">·</span>
-          <span>⚡ {DRIVERS_DATA.filter(d => d.status === 'En Viaje').length} en viaje</span>
-          <span className="map-footer-sep map-footer-right">·</span>
-          <span>Tiles: CartoDB Dark Matter</span>
+        <div className="map-screen-legend">
+          {Object.entries(STATUS_COLOR).map(([status, color]) => (
+            <div key={status} className="map-legend-item">
+              <div className="map-legend-dot" style={{ background: color }}></div>
+              <span>{status}</span>
+            </div>
+          ))}
         </div>
-
       </div>
+
+      {/* Map fills remaining space */}
+      <div className="map-screen-map" ref={mapRef}></div>
+
+      {/* Footer */}
+      <div className="map-screen-footer">
+        <span>📍 {BASE_LAT.toFixed(5)}, {BASE_LNG.toFixed(5)}</span>
+        <span className="map-footer-sep">·</span>
+        <span>🛵 {DRIVERS_DATA.filter(d => d.status === 'Disponible').length} disponibles</span>
+        <span className="map-footer-sep">·</span>
+        <span>⚡ {DRIVERS_DATA.filter(d => d.status === 'En Viaje').length} en viaje</span>
+        <span className="map-footer-sep map-footer-right">·</span>
+        <span>CartoDB Dark Matter</span>
+      </div>
+
     </div>
   )
 }

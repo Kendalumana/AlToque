@@ -14,7 +14,8 @@ export default function CatalogScreen({
   onOpenProximamente,
   products,
   restaurants,
-  onExitRole
+  onExitRole,
+  onOpenMap
 }) {
   const [currentCat, setCurrentCat] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
@@ -116,6 +117,7 @@ export default function CatalogScreen({
         <div className="zone-pill">
           <span className="zone-pill-icon">📍</span>
           <span>Miramar Centro</span>
+          <button className="ver-mapa-btn" onClick={onOpenMap}>🗺️ Ver Mapa</button>
           <button className="cambiar-btn" onClick={onBack}>Cambiar</button>
         </div>
 

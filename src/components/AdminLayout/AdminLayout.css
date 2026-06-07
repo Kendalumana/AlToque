@@ -196,19 +196,59 @@
 
 /* Responsiveness for Admin Panel */
 @media (max-width: 768px) {
-  .admin-layout { flex-direction: column; }
+  .admin-layout { flex-direction: column; overflow: auto; }
   .admin-sidebar {
     width: 100%;
     border-right: none;
     border-bottom: 1px solid #1e1e1e;
-    padding: 12px 16px;
+    padding: 10px 12px;
     flex-direction: row;
     align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
   }
-  .admin-brand { margin-bottom: 0; }
-  .admin-nav { flex-direction: row; flex: unset; gap: 4px; }
+  .admin-brand {
+    margin-bottom: 0;
+    flex-shrink: 0;
+    gap: 8px;
+  }
+  /* Hide "ADMIN PANEL" subtitle on mobile to save space */
+  .admin-brand span {
+    display: none;
+  }
+  /* Make brand name smaller on mobile */
+  .admin-brand h2 {
+    font-size: 0.95rem;
+  }
+  .admin-logo {
+    width: 34px;
+    height: 34px;
+  }
+  .admin-nav {
+    flex-direction: row;
+    flex: 1;
+    gap: 4px;
+    min-width: 0;
+  }
+  .admin-nav-item {
+    padding: 9px 12px;
+    font-size: 0.82rem;
+    gap: 6px;
+    flex: 1;
+    justify-content: center;
+    border-radius: 10px;
+  }
+  /* Hide text labels on very small screens, show only icons */
+  @media (max-width: 400px) {
+    .admin-nav-item > span:not(.nav-icon):not(.nav-badge) {
+      display: none;
+    }
+    .admin-brand h2 { display: none; }
+  }
   .admin-sidebar-bottom { display: none; }
-  .admin-header { height: 60px; padding: 0 16px; }
+  .admin-header { height: auto; min-height: 56px; padding: 10px 16px; flex-wrap: wrap; gap: 6px; }
+  .admin-header h1 { font-size: 1.05rem; }
   .admin-header-sub { display: none; }
-  .admin-content { padding: 16px; }
+  .admin-content { padding: 12px; }
 }

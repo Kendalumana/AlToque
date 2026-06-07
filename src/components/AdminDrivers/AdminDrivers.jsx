@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import './AdminDrivers.css'
 import '../DriversModal/DriversModal.css'
+import '../MapScreen/MapScreen.css'
+import MapScreen from '../MapScreen/MapScreen'
+import MiniMapPreview from './MiniMapPreview'
 import { DRIVERS_DATA } from '../DriversModal/DriversModal'
 
 const MOCK_DRIVERS = [
@@ -24,13 +27,18 @@ const STATUS_BG = {
 
 export default function AdminDrivers() {
   const [selected, setSelected] = useState(null)
+  const [mapOpen, setMapOpen] = useState(false)
+  const [mapDriverId, setMapDriverId] = useState(null)
   const [positions, setPositions] = useState(MOCK_DRIVERS.map(d => ({ id: d.id, x: d.x, y: d.y })))
   const [showProxOverlay, setShowProxOverlay] = useState(true)
-  
+  // Mini-mapa inline
+  const [miniMapOpen, setMiniMapOpen] = useState(false)
+  const [miniMapDriverId, setMiniMapDriverId] = useState(null)
+
   // Modal de Agregar Chofer
   const [showAddModal, setShowAddModal] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
-  
+
   // Modal de Detalle Completo de Chofer
   const [detailModalOpen, setDetailModalOpen] = useState(false)
 
@@ -59,11 +67,26 @@ export default function AdminDrivers() {
     setTimeout(() => setFormSuccess(false), 300)
   }
 
+  // Seleccionar chofer: muestra el mapa de inmediato con ese chofer
+  const handleSelectDriver = (driverId) => {
+    setSelected(driverId)
+    setMiniMapDriverId(driverId)
+    setMiniMapOpen(true)
+    setShowProxOverlay(false)
+  }
+
   const selectedDriver = selected ? DRIVERS_DATA.find(d => d.id === selected) : null
 
   return (
     <>
-      <div className="admin-drivers-container fade-up">
+      {mapOpen && (
+        <MapScreen
+          onBack={() => { setMapOpen(false); setMapDriverId(null) }}
+          selectedDriverId={mapDriverId}
+        />
+      )}
+
+      <div className={`admin-drivers-container fade-up ${miniMapOpen ? 'minimap-active' : ''}`}>
         {/* Panel izquierdo estilo DriversModal */}
         <div className="drivers-left-panel dm-style">
           <div className="dm-header" style={{ padding: '16px', borderBottom: '1px solid #222' }}>
@@ -75,13 +98,13 @@ export default function AdminDrivers() {
               </div>
             </div>
           </div>
-          
+
           <div className="dm-list" style={{ width: '100%', flex: 1, borderRight: 'none' }}>
             {DRIVERS_DATA.map(d => (
               <button
                 key={d.id}
                 className={`dm-card ${selected === d.id ? 'selected' : ''}`}
-                onClick={() => setSelected(selected === d.id ? null : d.id)}
+                onClick={() => handleSelectDriver(d.id)}
               >
                 <div className="dm-card-left">
                   <div className="dm-avatar" style={{ borderColor: STATUS_COLOR[d.status], width: 38, height: 38, fontSize: '1.1rem' }}>
@@ -113,7 +136,7 @@ export default function AdminDrivers() {
           </div>
         </div>
 
-        {/* Contenido Derecho: Stats + Mapa Mock */}
+        {/* Contenido Derecho: Stats + Mapa Mock o MiniMap real */}
         <div className="drivers-right-area">
           {/* Stats bar */}
           <div className="drivers-stats-bar">
@@ -124,6 +147,7 @@ export default function AdminDrivers() {
                 <span className="stat-count">{MOCK_DRIVERS.filter(d => d.status === status).length}</span>
               </div>
             ))}
+
             <div className="drivers-stat" style={{ marginLeft: 'auto' }}>
               <span className="stat-label" style={{ color: '#888' }}>Total viajes hoy:</span>
               <span className="stat-count" style={{ color: 'var(--yellow-bright)' }}>
@@ -132,84 +156,85 @@ export default function AdminDrivers() {
             </div>
           </div>
 
-          {/* Simulación visual de mapa */}
+          {/* Área del mapa: mock o mini-mapa real */}
           <div className="map-container">
-            <div className="map-grid-bg"></div>
-            <div className="map-road horizontal" style={{ top: '35%' }}></div>
-            <div className="map-road horizontal" style={{ top: '65%' }}></div>
-            <div className="map-road vertical" style={{ left: '30%' }}></div>
-            <div className="map-road vertical" style={{ left: '60%' }}></div>
+            {miniMapOpen ? (
+              /* ── Mini-mapa Leaflet real ── */
+              <MiniMapPreview
+                selectedDriverId={miniMapDriverId}
+                onClose={() => {
+                  setMiniMapOpen(false)
+                  setSelected(null)
+                  setShowProxOverlay(true)
+                }}
+              />
+            ) : (
+              /* ── Simulación visual de mapa (default) ── */
+              <>
+                <div className="map-grid-bg"></div>
+                <div className="map-road horizontal" style={{ top: '35%' }}></div>
+                <div className="map-road horizontal" style={{ top: '65%' }}></div>
+                <div className="map-road vertical" style={{ left: '30%' }}></div>
+                <div className="map-road vertical" style={{ left: '60%' }}></div>
 
-            <div className="map-zone-label">📍 Miramar, Puntarenas</div>
+                <div className="map-zone-label">📍 Miramar, Puntarenas</div>
 
-            {/* Central hub (casita) */}
-            <div className="driver-pin casita" style={{ left: '50%', top: '50%' }}>
-              <div className="pin-pulse" style={{ borderColor: 'var(--yellow-bright)' }}></div>
-              <div className="pin-avatar" style={{ borderColor: 'var(--yellow-bright)', background: '#111' }}>🏠</div>
-              <div className="pin-label">Central</div>
-            </div>
-
-            {MOCK_DRIVERS.map(driver => {
-              const pos = positions.find(p => p.id === driver.id) || driver
-              return (
-                <div
-                  key={driver.id}
-                  className={`driver-pin ${driver.status.replace(' ', '-').toLowerCase()}`}
-                  style={{
-                    left: `${pos.x}%`,
-                    top: `${pos.y}%`,
-                    transition: 'left 1.8s ease, top 1.8s ease'
-                  }}
-                >
-                  <div className="pin-pulse"></div>
-                  <div className="pin-avatar">{driver.emoji}</div>
-                  <div className="pin-label">{driver.name.split(' ')[0]}</div>
+                {/* Central hub */}
+                <div className="driver-pin casita" style={{ left: '50%', top: '50%' }}>
+                  <div className="pin-pulse" style={{ borderColor: 'var(--yellow-bright)' }}></div>
+                  <div className="pin-avatar" style={{ borderColor: 'var(--yellow-bright)', background: '#111' }}>🏠</div>
+                  <div className="pin-label">Central</div>
                 </div>
-              )
-            })}
 
-            {/* Detalle Flotante si se selecciona un chofer de la lista izquierda */}
-            {selectedDriver && (
-              <div className="driver-detail-floating">
-                <button className="driver-detail-close" onClick={() => setSelected(null)}>✕</button>
-                <div className="driver-detail-avatar" style={{ borderColor: STATUS_COLOR[selectedDriver.status] }}>
-                  {selectedDriver.emoji}
-                </div>
-                <div className="driver-detail-info">
-                  <h4>{selectedDriver.name}</h4>
-                  <div className="driver-detail-status" style={{ color: STATUS_COLOR[selectedDriver.status] }}>
-                    ● {selectedDriver.status}
+                {/* Pines de choferes */}
+                {MOCK_DRIVERS.map(driver => {
+                  const pos = positions.find(p => p.id === driver.id) || driver
+                  return (
+                    <button
+                      key={driver.id}
+                      className={`driver-pin ${driver.status.replace(' ', '-').toLowerCase()} ${selected === driver.id ? 'pin-selected' : ''}`}
+                      style={{
+                        left: `${pos.x}%`,
+                        top: `${pos.y}%`,
+                        transition: 'left 1.8s ease, top 1.8s ease',
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => handleSelectDriver(driver.id)}
+                      title={`Ver detalles de ${driver.name}`}
+                    >
+                      <div className="pin-pulse"></div>
+                      <div className="pin-avatar">{driver.emoji}</div>
+                      <div className="pin-label">{driver.name.split(' ')[0]}</div>
+                    </button>
+                  )
+                })}
+
+                {/* Overlay Próximamente */}
+                {!selectedDriver && showProxOverlay && (
+                  <div className="drivers-prox-overlay">
+                    <div className="drivers-prox-card">
+                      <div className="drivers-prox-icon">📡</div>
+                      <div className="drivers-prox-badge">En Desarrollo</div>
+                      <h3>Asignación de Choferes</h3>
+                      <p>
+                        Próximamente podrás ver a todos los choferes en tiempo real sobre el mapa de Miramar,
+                        asignarles viajes automáticamente según cercanía, y ver el estatus de las entregas.
+                      </p>
+                      <button className="drivers-prox-btn" onClick={() => { setMiniMapDriverId(null); setMiniMapOpen(true); setShowProxOverlay(false) }}>
+                        🗺️ Ver en tiempo real
+                      </button>
+                    </div>
                   </div>
-                  <div className="driver-detail-meta">
-                    📞 {selectedDriver.phone} · 📦 {selectedDriver.tripsToday} viajes hoy
-                  </div>
-                  <button className="driver-floating-more-btn" onClick={() => setDetailModalOpen(true)}>
-                    Ver más detalles
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Overlay Próximamente */}
-            {!selectedDriver && showProxOverlay && (
-              <div className="drivers-prox-overlay">
-                <div className="drivers-prox-card">
-                  <div className="drivers-prox-icon">📡</div>
-                  <div className="drivers-prox-badge">En Desarrollo</div>
-                  <h3>Asignación de Choferes</h3>
-                  <p>
-                    Próximamente podrás ver a todos los choferes en tiempo real sobre el mapa de Miramar,
-                    asignarles viajes automáticamente según cercanía, y ver el estatus de las entregas.
-                  </p>
-                  <button className="drivers-prox-btn" onClick={() => setShowProxOverlay(false)}>
-                    🗺️ Ver en tiempo real
-                  </button>
-                </div>
-              </div>
+                )}
+              </>
             )}
           </div>
         </div>
       </div>
+
 
       {/* Modal de Agregar Chofer */}
       {showAddModal && (
@@ -329,6 +354,16 @@ export default function AdminDrivers() {
                 <div className="dm-detail-notes">
                   <span className="dm-detail-label">📝 Notas</span>
                   <p>{selectedDriver.notes}</p>
+                </div>
+
+                <div style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
+                  <button
+                    className="driver-floating-map-btn"
+                    style={{ flex: 1, padding: '13px', borderRadius: 12, fontSize: '0.9rem' }}
+                    onClick={() => { setDetailModalOpen(false); setMapDriverId(selectedDriver.id); setMapOpen(true) }}
+                  >
+                    📍 Ver en mapa en vivo
+                  </button>
                 </div>
 
                 <a

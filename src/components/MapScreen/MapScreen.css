@@ -1,74 +1,74 @@
 /* ── Import Leaflet CSS ── */
 @import 'leaflet/dist/leaflet.css';
 
-/* ── OVERLAY ── */
-.map-modal-overlay {
+/* ── FULL SCREEN LAYOUT ── */
+.map-screen {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(8px);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: fadeIn 0.25s ease both;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-/* ── CONTAINER ── */
-.map-modal-container {
-  width: min(1100px, 95vw);
-  height: min(700px, 90vh);
-  background: #0a0a0a;
-  border-radius: 20px;
-  border: 1px solid #2a2a2a;
-  box-shadow: 
-    0 40px 100px rgba(0,0,0,0.9),
-    0 0 0 1px rgba(236,242,68,0.08),
-    0 0 60px rgba(236,242,68,0.05);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  animation: scaleIn 0.3s cubic-bezier(.4,0,.2,1) both;
+  background: #0a0a0a;
+  z-index: 200;
+  animation: mapScreenIn 0.28s cubic-bezier(.4,0,.2,1) both;
 }
 
-@keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.96) translateY(12px); }
-  to   { opacity: 1; transform: scale(1)    translateY(0);    }
+@keyframes mapScreenIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ── HEADER ── */
-.map-modal-header {
+.map-screen-header {
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 14px 22px;
+  gap: 16px;
+  padding: 12px 20px;
   background: #111;
   border-bottom: 1px solid #222;
   flex-shrink: 0;
   flex-wrap: wrap;
+  min-height: 52px;
 }
 
-.map-modal-title {
+.map-screen-back {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: rgba(236,242,68,0.08);
+  border: 1.5px solid rgba(236,242,68,0.25);
+  border-radius: 10px;
+  color: var(--yellow-bright);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.map-screen-back:hover {
+  background: rgba(236,242,68,0.18);
+  box-shadow: 0 0 12px rgba(236,242,68,0.2);
+}
+
+.map-screen-title {
   display: flex;
   align-items: center;
   gap: 10px;
   font-size: 1rem;
   font-weight: 700;
   color: #fff;
+  flex-shrink: 0;
 }
 
-.map-modal-dot {
+.map-screen-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: var(--yellow-bright);
   box-shadow: 0 0 8px var(--yellow-bright);
   animation: blink 1.5s ease-in-out infinite;
+  flex-shrink: 0;
 }
 
 @keyframes blink {
@@ -76,17 +76,18 @@
   50%       { opacity: 0.3; }
 }
 
-.map-modal-sub {
+.map-screen-sub {
   font-size: 0.8rem;
   font-weight: 500;
   color: #666;
 }
 
-.map-modal-legend {
+.map-screen-legend {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   margin-left: auto;
+  flex-wrap: wrap;
 }
 
 .map-legend-item {
@@ -96,44 +97,29 @@
   font-size: 0.78rem;
   color: #aaa;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .map-legend-dot {
   width: 9px;
   height: 9px;
   border-radius: 50%;
-}
-
-.map-modal-close {
-  width: 32px;
-  height: 32px;
-  border-radius: 10px;
-  background: #1e1e1e;
-  color: #888;
-  font-size: 0.85rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-  border: 1px solid #2a2a2a;
   flex-shrink: 0;
-  cursor: pointer;
 }
-.map-modal-close:hover { background: #2a2a2a; color: #fff; }
 
 /* ── MAP AREA ── */
-.map-modal-map {
+.map-screen-map {
   flex: 1;
   width: 100%;
   min-height: 0;
 }
 
 /* ── FOOTER ── */
-.map-modal-footer {
+.map-screen-footer {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 22px;
+  padding: 9px 20px;
   background: #0d0d0d;
   border-top: 1px solid #1e1e1e;
   font-size: 0.75rem;
@@ -143,10 +129,9 @@
 }
 
 .map-footer-sep { color: #333; }
-
 .map-footer-right { margin-left: auto; }
 
-/* ── CUSTOM LEAFLET PINS ── */
+/* ── CUSTOM LEAFLET PINS (shared with MapModal) ── */
 .map-pin-base,
 .map-pin-driver {
   position: relative;
@@ -213,7 +198,7 @@
   backdrop-filter: blur(4px);
 }
 
-/* ── DARK POPUP (Leaflet) ── */
+/* ── DARK POPUP ── */
 .dark-popup .leaflet-popup-content-wrapper {
   background: #1a1a1a !important;
   border: 1px solid #333 !important;
@@ -223,20 +208,11 @@
   font-family: 'Outfit', system-ui, sans-serif !important;
   font-size: 0.85rem !important;
 }
-.dark-popup .leaflet-popup-tip {
-  background: #1a1a1a !important;
-}
-.dark-popup .leaflet-popup-close-button {
-  color: #888 !important;
-}
-.dark-popup .leaflet-popup-close-button:hover {
-  color: #fff !important;
-}
+.dark-popup .leaflet-popup-tip { background: #1a1a1a !important; }
+.dark-popup .leaflet-popup-close-button { color: #888 !important; }
+.dark-popup .leaflet-popup-close-button:hover { color: #fff !important; }
 
-.map-popup {
-  padding: 4px 2px;
-  line-height: 1.7;
-}
+.map-popup { padding: 4px 2px; line-height: 1.7; }
 .map-popup strong { color: #fff; font-size: 0.9rem; }
 .map-popup span { color: #aaa; }
 
@@ -246,9 +222,7 @@
   color: #fff !important;
   border-color: #333 !important;
 }
-.leaflet-control-zoom a:hover {
-  background: #2a2a2a !important;
-}
+.leaflet-control-zoom a:hover { background: #2a2a2a !important; }
 .leaflet-control-attribution {
   background: rgba(0,0,0,0.6) !important;
   color: #555 !important;
@@ -256,43 +230,18 @@
 }
 .leaflet-control-attribution a { color: #777 !important; }
 
-/* ── POPUP BUTTON ── */
-.driver-popup-more-btn {
-  margin-top: 8px;
-  background: rgba(236, 242, 68, 0.1);
-  border: 1px solid var(--yellow-bright);
-  color: var(--yellow-bright);
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  cursor: pointer;
-  width: 100%;
-  transition: all 0.2s;
-  display: block;
-  text-align: center;
-}
-.driver-popup-more-btn:hover {
-  background: var(--yellow-bright);
-  color: #000;
-}
-
 /* ── RESPONSIVE ── */
-@media (max-width: 768px) {
-  .map-modal-container {
-    width: 100vw;
-    height: 100vh;
-    border-radius: 0;
-    border: none;
-  }
-  .map-modal-header {
-    padding: 12px 16px;
+@media (max-width: 480px) {
+  .map-screen-header {
+    padding: 10px 14px;
     gap: 10px;
   }
-  .map-modal-footer {
-    padding: 8px 16px;
+  .map-screen-legend {
+    margin-left: 0;
+    gap: 10px;
+    width: 100%;
   }
-  .map-modal-legend {
-    display: none; /* Ocultar leyenda en móvil para ahorrar espacio */
-  }
+  .map-screen-sub { display: none; }
+  .map-screen-footer { padding: 8px 14px; gap: 8px; font-size: 0.7rem; }
+  .map-footer-right { margin-left: 0; }
 }
