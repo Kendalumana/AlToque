@@ -521,10 +521,12 @@
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
   .admin-drivers-container {
-    flex-direction: column-reverse;
+    flex-direction: column-reverse; /* Map on top, list on bottom */
     height: auto;
-    min-height: calc(100vh - 140px);
+    min-height: unset;
     overflow-y: visible;
+    border: none; /* remove container border to avoid squished look */
+    background: transparent;
   }
   .admin-drivers-container.minimap-active .drivers-left-panel {
     display: none;
@@ -536,14 +538,20 @@
   .drivers-left-panel {
     width: 100%;
     border-right: none;
-    border-top: 1px solid #222;
-    max-height: 60vh;
+    border: 1px solid #222;
+    border-radius: 16px;
+    margin-top: 16px; /* give it space from the map */
+    max-height: none;
+    height: auto;
   }
   .drivers-right-area {
     width: 100%;
-    height: 380px;
+    height: 480px; /* larger height so the prox card fits perfectly */
     min-height: unset;
     flex: none;
+    border-radius: 16px;
+    border: 1px solid #222;
+    overflow: hidden;
   }
   
   /* Ajuste responsivo de la barra de estadísticas */
