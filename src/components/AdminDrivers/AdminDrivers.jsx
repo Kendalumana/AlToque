@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './AdminDrivers.css'
 import '../DriversModal/DriversModal.css'
-import MapModal from '../MapModal/MapModal'
 import { DRIVERS_DATA } from '../DriversModal/DriversModal'
 
 const MOCK_DRIVERS = [
@@ -25,12 +24,14 @@ const STATUS_BG = {
 
 export default function AdminDrivers() {
   const [selected, setSelected] = useState(null)
-  const [mapOpen, setMapOpen] = useState(false)
   const [positions, setPositions] = useState(MOCK_DRIVERS.map(d => ({ id: d.id, x: d.x, y: d.y })))
   
   // Modal de Agregar Chofer
   const [showAddModal, setShowAddModal] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
+  
+  // Modal de Detalle Completo de Chofer
+  const [detailModalOpen, setDetailModalOpen] = useState(false)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -61,8 +62,6 @@ export default function AdminDrivers() {
 
   return (
     <>
-      {mapOpen && <MapModal onClose={() => setMapOpen(false)} />}
-
       <div className="admin-drivers-container fade-up">
         {/* Panel izquierdo estilo DriversModal */}
         <div className="drivers-left-panel dm-style">
@@ -109,9 +108,6 @@ export default function AdminDrivers() {
           <div className="drivers-panel-footer">
             <button className="drivers-add-btn-large" onClick={() => setShowAddModal(true)}>
               ➕ Agregar Chofer
-            </button>
-            <button className="drivers-map-btn-large" onClick={() => setMapOpen(true)}>
-              🗺️ Ver Mapa Real
             </button>
           </div>
         </div>
@@ -179,6 +175,9 @@ export default function AdminDrivers() {
                   <div className="driver-detail-meta">
                     📞 {selectedDriver.phone} · 📦 {selectedDriver.tripsToday} viajes hoy
                   </div>
+                  <button className="driver-floating-more-btn" onClick={() => setDetailModalOpen(true)}>
+                    Ver más detalles
+                  </button>
                 </div>
               </div>
             )}
@@ -194,9 +193,6 @@ export default function AdminDrivers() {
                     Próximamente podrás ver a todos los choferes en tiempo real sobre el mapa de Miramar,
                     asignarles viajes automáticamente según cercanía, y ver el estatus de las entregas.
                   </p>
-                  <button className="drivers-prox-btn" onClick={() => setMapOpen(true)}>
-                    🗺️ Ver Mapa de Miramar
-                  </button>
                 </div>
               </div>
             )}
@@ -247,6 +243,93 @@ export default function AdminDrivers() {
                 </button>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Detalle Extendido de Chofer */}
+      {detailModalOpen && selectedDriver && (
+        <div className="dm-overlay" onClick={e => e.target === e.currentTarget && setDetailModalOpen(false)}>
+          <div className="dm-container fade-up" style={{ width: 'min(700px, 96vw)', maxHeight: '85vh', background: '#111' }}>
+            <div className="dm-header">
+              <div className="dm-title">
+                <span className="dm-title-icon">🛵</span>
+                <div>
+                  <h2>Perfil del Chofer</h2>
+                  <span className="dm-subtitle">Detalles y estadísticas</span>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button className="dm-edit-btn" onClick={() => alert('Próximamente: La edición de perfiles de chofer está en desarrollo.')}>✏️</button>
+                <button className="dm-close" onClick={() => setDetailModalOpen(false)}>✕</button>
+              </div>
+            </div>
+
+            <div className="dm-body" style={{ flexDirection: 'column' }}>
+              <div className="dm-detail" style={{ padding: '24px' }}>
+                <div className="dm-detail-header">
+                  <div className="dm-detail-avatar" style={{ borderColor: STATUS_COLOR[selectedDriver.status] }}>
+                    {selectedDriver.emoji}
+                  </div>
+                  <div>
+                    <h3>{selectedDriver.name}</h3>
+                    <p className="dm-detail-alias">"{selectedDriver.alias}" · {selectedDriver.zone}</p>
+                    <span className="dm-detail-status" style={{ color: STATUS_COLOR[selectedDriver.status], background: STATUS_BG[selectedDriver.status] }}>
+                      ● {selectedDriver.status}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="dm-detail-grid">
+                  <div className="dm-detail-item">
+                    <span className="dm-detail-label">📞 Teléfono</span>
+                    <span className="dm-detail-val">{selectedDriver.phone}</span>
+                  </div>
+                  <div className="dm-detail-item">
+                    <span className="dm-detail-label">🛵 Vehículo</span>
+                    <span className="dm-detail-val">{selectedDriver.vehicle}</span>
+                  </div>
+                  <div className="dm-detail-item">
+                    <span className="dm-detail-label">🔖 Placa</span>
+                    <span className="dm-detail-val mono">{selectedDriver.plate}</span>
+                  </div>
+                  <div className="dm-detail-item">
+                    <span className="dm-detail-label">⭐ Calificación</span>
+                    <span className="dm-detail-val">{selectedDriver.rating} / 5.0</span>
+                  </div>
+                  <div className="dm-detail-item">
+                    <span className="dm-detail-label">📦 Viajes hoy</span>
+                    <span className="dm-detail-val">{selectedDriver.tripsToday}</span>
+                  </div>
+                  <div className="dm-detail-item">
+                    <span className="dm-detail-label">🏆 Viajes totales</span>
+                    <span className="dm-detail-val">{selectedDriver.tripsTotal}</span>
+                  </div>
+                  <div className="dm-detail-item">
+                    <span className="dm-detail-label">💰 Ganancia hoy</span>
+                    <span className="dm-detail-val yellow">₡{selectedDriver.earnings_today.toLocaleString()}</span>
+                  </div>
+                  <div className="dm-detail-item">
+                    <span className="dm-detail-label">📅 Ingresó</span>
+                    <span className="dm-detail-val">{new Date(selectedDriver.joinedDate).toLocaleDateString('es-CR', { year:'numeric', month:'long', day:'numeric' })}</span>
+                  </div>
+                </div>
+
+                <div className="dm-detail-notes">
+                  <span className="dm-detail-label">📝 Notas</span>
+                  <p>{selectedDriver.notes}</p>
+                </div>
+
+                <a
+                  className="dm-whatsapp-btn"
+                  href={`https://wa.me/${selectedDriver.whatsapp}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  💬 Contactar por WhatsApp
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       )}

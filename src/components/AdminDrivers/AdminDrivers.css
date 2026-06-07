@@ -526,6 +526,44 @@
   .drivers-left-panel {
     width: 100%;
     border-right: none;
-    border-top: 1px solid #222;
   }
+}
+
+/* ── NEW BUTTONS ── */
+.driver-floating-more-btn {
+  margin-top: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+.driver-floating-more-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.dm-edit-btn {
+  background: #1e1e1e;
+  border: 1px solid #333;
+  color: #888;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.dm-edit-btn:hover {
+  background: var(--yellow-bright);
+  border-color: var(--yellow-bright);
+  color: #000;
 }
