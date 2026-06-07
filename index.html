@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Al Toque Multiservicios · Delivery Express Costa Rica</title>
+  <meta name="description" content="Al Toque Multiservicios – Servicio express de delivery en Miramar y zonas cercanas, Costa Rica. Pedí lo que necesitás al toque." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     PANTALLA 1: SELECCIÓN DE ZONA
+═══════════════════════════════════════════════ -->
+<div id="screen-location" class="screen active">
+  <div class="app-shell">
+
+    <div class="splash-header">
+      <div class="logo-wrapper">
+        <img src="resources/AlToqueIcon.jpeg" alt="Al Toque logo" class="logo-img" id="logo-main" />
+      </div>
+      <h1 class="brand-name">Al Toque</h1>
+      <p class="brand-sub">MULTISERVICIOS</p>
+      <p class="brand-tagline">Delivery regional · Costa Rica</p>
+    </div>
+
+    <div class="location-card">
+      <div class="location-header">
+        <span class="pin-icon">📍</span>
+        <div>
+          <h2 class="location-title">Primero, dinos dónde estás</h2>
+          <p class="location-desc">Tu región define los servicios disponibles y el costo de envío.</p>
+        </div>
+      </div>
+
+      <div class="zone-list" id="zone-list">
+
+        <button class="zone-item" id="btn-miramar" onclick="selectZone('miramar')">
+          <div class="zone-info">
+            <span class="zone-name">Miramar Centro</span>
+            <span class="zone-prov">Puntarenas</span>
+          </div>
+          <span class="zone-arrow">›</span>
+        </button>
+
+        <button class="zone-item" id="btn-otros" onclick="selectZone('otros')">
+          <div class="zone-info">
+            <span class="zone-name">Otros</span>
+            <span class="zone-prov">Zona pendiente de cobertura</span>
+          </div>
+          <span class="zone-arrow">›</span>
+        </button>
+
+      </div>
+    </div>
+
+    <p class="footer-note">Al Toque Multiservicios · Desde 2021 · 8460-7119</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PANTALLA 2: CATÁLOGO (MIRAMAR)
+═══════════════════════════════════════════════ -->
+<div id="screen-catalog" class="screen">
+  <div class="app-shell">
+
+    <header class="top-bar">
+      <div class="top-bar-left">
+        <img src="resources/AlToqueIcon.jpeg" alt="Al Toque" class="top-logo" />
+        <span class="top-brand">Al Toque</span>
+      </div>
+      <button class="cart-btn" id="cart-btn" onclick="toggleCart()">
+        🛒 <span class="cart-badge" id="cart-count">0</span>
+      </button>
+    </header>
+
+    <div class="zone-pill">
+      <span class="zone-pill-icon">📍</span>
+      <span id="active-zone-label">Miramar Centro</span>
+      <button class="cambiar-btn" onclick="goBack()">Cambiar</button>
+    </div>
+
+    <div class="search-bar-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-input" class="search-input" placeholder="¿Qué necesitás hoy?" oninput="filterProducts()" />
+    </div>
+
+    <div class="delivery-badge">
+      <span class="bolt">⚡</span>
+      <span id="delivery-msg">Entrega exprés en Miramar Centro · 30–45 min</span>
+    </div>
+
+    <!-- Categorías -->
+    <section class="section-block">
+      <h3 class="section-title">CATEGORÍAS</h3>
+      <div class="categories-grid" id="categories-grid">
+        <button class="cat-card active" id="cat-all" onclick="filterCat('all', this)">
+          <span class="cat-icon">🏪</span>
+          <span class="cat-label">Todo</span>
+        </button>
+        <button class="cat-card" id="cat-mandados" onclick="filterCat('mandados', this)">
+          <span class="cat-icon">🛵</span>
+          <span class="cat-label">Mandados</span>
+        </button>
+        <button class="cat-card" id="cat-comida" onclick="filterCat('comida', this)">
+          <span class="cat-icon">🍕</span>
+          <span class="cat-label">Comida</span>
+          <span class="cat-sub">Local</span>
+        </button>
+        <button class="cat-card" id="cat-super" onclick="filterCat('super', this)">
+          <span class="cat-icon">🛒</span>
+          <span class="cat-label">Supermercado</span>
+          <span class="cat-sub">Palí</span>
+        </button>
+        <button class="cat-card" id="cat-farmacia" onclick="filterCat('farmacia', this)">
+          <span class="cat-icon">💊</span>
+          <span class="cat-label">Farmacia</span>
+        </button>
+        <button class="cat-card" id="cat-ferreteria" onclick="filterCat('ferreteria', this)">
+          <span class="cat-icon">🔧</span>
+          <span class="cat-label">Ferretería</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Productos -->
+    <section class="section-block">
+      <h3 class="section-title" id="products-title">DISPONIBLE EN MIRAMAR CENTRO <span class="item-count" id="item-count"></span></h3>
+      <div class="products-list" id="products-list"></div>
+    </section>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PANTALLA 3: OTROS (SIN COBERTURA)
+═══════════════════════════════════════════════ -->
+<div id="screen-otros" class="screen">
+  <div class="app-shell">
+
+    <header class="top-bar">
+      <div class="top-bar-left">
+        <img src="resources/AlToqueIcon.jpeg" alt="Al Toque" class="top-logo" />
+        <span class="top-brand">Al Toque</span>
+      </div>
+      <button class="back-btn" onclick="goBack()">←</button>
+    </header>
+
+    <div class="otros-wrap">
+      <div class="otros-icon">🗺️</div>
+      <h2 class="otros-title">Tu zona está próximamente</h2>
+      <p class="otros-desc">
+        Al Toque Multiservicios está expandiendo su cobertura.<br/>
+        Por ahora operamos en <strong>Miramar Centro, Puntarenas</strong>.
+      </p>
+      <p class="otros-desc">
+        Si querés solicitar un mandado fuera de cobertura, contactanos directamente:
+      </p>
+      <a href="tel:84607119" class="cta-phone" id="btn-llamar">📞 8460-7119</a>
+      <a href="https://wa.me/50684607119?text=Hola%2C%20quiero%20solicitar%20un%20servicio%20Al%20Toque" target="_blank" class="cta-whatsapp" id="btn-whatsapp">
+        💬 Escribir por WhatsApp
+      </a>
+      <button class="btn-secondary" onclick="goBack()" id="btn-volver">← Volver</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PANEL CARRITO
+═══════════════════════════════════════════════ -->
+<div id="cart-overlay" class="cart-overlay hidden" onclick="closeCartOutside(event)">
+  <div class="cart-panel" id="cart-panel">
+    <div class="cart-header">
+      <h3 class="cart-title">Tu Pedido</h3>
+      <button class="cart-close" onclick="toggleCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cart-items">
+      <p class="cart-empty">Tu pedido está vacío.<br/>¡Agregá algo! 🛵</p>
+    </div>
+    <div class="cart-footer" id="cart-footer" style="display:none">
+      <div class="cart-total-row">
+        <span>Total estimado</span>
+        <span id="cart-total">₡0</span>
+      </div>
+      <p class="cart-note">* Costo de envío se coordina al confirmar.</p>
+      <a id="cart-whatsapp-btn" href="#" class="cta-whatsapp" style="margin-top:12px; display:block; text-align:center;">
+        💬 Confirmar por WhatsApp
+      </a>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
